@@ -8,8 +8,11 @@ CI-5437 - Inteligencia Artificial I, Universidad Simón Bolívar, abril - julio 
 ## Resumen
 Este proyecto tiene como objetivo modelar un problema en la Forma Normal Conjuntiva (FNC), utilizar un solucionador SAT para resolverlo y traducir la salida del solucionador SAT a un formato legible para humanos. Se pone especial énfasis en mantener transformaciones y modelos eficientes.
 
-## Enfoque
-La solución se desglosó en cuatro módulos de Python, todos disponibles en el repositorio del proyecto. También creamos un script para unir las diversas funcionalidades.
+## Metodología:
+El desarrollo de la solución a nuestro problema fue dividido en cuatro módulos de Python, disponibles en el repositorio del proyecto. Adicionalmente, creamos un script que permite unir estas funcionalidades en una cadena de procesos.
+
+## Modelado del Problema:
+En la etapa inicial, se realiza un preprocesamiento de los parámetros. Aquí se leen los parámetros de entrada y se calcula la cantidad de días hábiles disponibles para los partidos y la cantidad de bloques en los que puede ocurrir un partido, tomando en consideración las restricciones que un partido debe comenzar a una hora precisa y durar exactamente dos horas. Con estos parámetros en mano, la construcción de las cláusulas en el SAT que modela este problema se realiza de manera más sencilla. En caso de que los parámetros introducidos impidan la realización de partidos, se reporta como una entrada no válida.
 
 ### Modelado del Problema
 En la primera etapa se ejecuta el preprocesamiento de los parámetros. Se leen los parámetros de entrada, se calcula el número de días laborables en los que pueden ocurrir los partidos y el número de bloques en los que puede tener lugar un partido. Si los parámetros dados impiden que se realicen los partidos, entonces se informa un mensaje de "entrada no válida".
