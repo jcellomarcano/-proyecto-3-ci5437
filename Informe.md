@@ -31,7 +31,7 @@ Para hacer cumplir las reglas del torneo, modelamos lo siguiente:
 El proyecto fue implementado en Python. Para ejecutar el programa, primero instala el paquete `ics`, que se utilizará para crear archivos en formato iCalendar. Esto se puede hacer utilizando el siguiente comando en un entorno virtual: 
 Ejecuta el comando:
 ```
- pip install -e <ruta-a-la-carpeta>/-proyecto-3-c15437-main. 
+ pip install -e <ruta-a-la-carpeta>/-proyecto-3-c15437. 
 ```
 Por favor, verifica que estás utilizando la versión correcta de pip para tu intérprete de Python.
 
