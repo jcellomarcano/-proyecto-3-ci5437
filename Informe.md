@@ -17,18 +17,26 @@ En la etapa inicial, se realiza un preprocesamiento de los parámetros. Aquí se
 ### Modelado del Problema
 En la primera etapa se ejecuta el preprocesamiento de los parámetros. Se leen los parámetros de entrada, se calcula el número de días laborables en los que pueden ocurrir los partidos y el número de bloques en los que puede tener lugar un partido. Si los parámetros dados impiden que se realicen los partidos, entonces se informa un mensaje de "entrada no válida".
 
-### Modelado SAT
-El problema se modela como un problema SAT utilizando literales definidos de la siguiente manera: 
-```
-x(i, j, d, b) = El equipo i juega en casa vs. el equipo j (visitante) en el día d en el bloque b
-```
-Esto reduce el problema a encontrar cuáles de estos literales tendrán el valor 'verdadero' al final de la ejecución del solucionador SAT.
+### Formulación del Problema SAT
+Nuestro enfoque para representar el problema consiste en una formulación SAT, donde inicialmente definimos literales que constituirán nuestras cláusulas. Estos literales se representan así:
 
-Para hacer cumplir las reglas del torneo, modelamos lo siguiente:
-- **Regla de todos contra todos:** Cada participante deberá jugar dos veces con cada uno de los demás participantes, una vez como "visitantes" y la otra como "locales".
-- **Regla de no juegos concurrentes:** Dos partidos no pueden ocurrir al mismo tiempo.
-- **Regla de una vez al día:** Un participante puede jugar como máximo una vez por día.
-- **Regla de cambio de ubicación:** Un participante no puede jugar como "visitante" en dos días consecutivos, ni como "local" en dos días consecutivos.
+x(i, j, d, b) = Representa que el equipo i está compitiendo en casa contra el equipo j (visitante) en el día 'd' durante el bloque de tiempo 'b'.
+
+El objetivo es identificar cuáles de estos literales resultarán en un valor verdadero ('true') después de la ejecución del solucionador SAT.
+
+Para garantizar el cumplimiento de las reglas del torneo, modelamos las siguientes condiciones:
+
+Todos contra todos: Cada participante deberá enfrentarse dos veces a cada uno de los demás competidores, una vez como 'local' y la otra como 'visitante'. Para satisfacer este requerimiento, generamos los siguientes tipos de cláusulas:
+
+Primero, se establece que cada par de equipos debe competir al menos una vez. Por lo tanto, para cada par de equipos i y j, generamos cláusulas compuestas por los literales x(i, j, d, b), donde 'd' y 'b' asumen todas las combinaciones posibles de días y bloques de tiempo.
+
+Luego, se dictamina que cada par de equipos puede competir como máximo una vez. Para conseguir esto, para cada par de equipos i y j, generamos cláusulas (¬x(i, j, d, b) ∨ ¬x(i, j, d′, b′)) para todas las combinaciones distintas de días y bloques de tiempo 'd’ b’'. Esto modela la implicación de que si un equipo compite contra otro en un día y bloque de tiempo específicos, no podrá competir contra el mismo equipo en un día y bloque de tiempo diferentes.
+
+Sin coincidencias simultáneas: No se pueden celebrar dos partidos al mismo tiempo. Para modelar esta restricción, generamos implicaciones que estipulan que si dos equipos juegan en un día y bloque de tiempo específicos, entonces cualquier otro par de equipos no puede competir ese mismo día y en ese mismo bloque de tiempo. Las cláusulas resultantes serían de la forma (¬x(i, j, d, b) ∨ ¬x(i′, j′, d, b)) para cada par de equipos i,j y cualquier otro par i',j'.
+
+Un juego por día: Cada equipo solo puede jugar una vez al día. Para esto, generamos implicaciones que dictan que si dos equipos juegan en un día y bloque de tiempo específicos, cualquier otro tercer equipo no puede jugar contra estos equipos (ya sea en casa o de visita) en el mismo día. Adicionalmente, se agrega una implicación que impide que los mismos equipos compitan el mismo día, incluso si cambian de local.
+
+Alternancia de localía: Cada participante no puede jugar como 'visitante' o 'local' dos días consecutivos. Para satisfacer esta condición, construimos cláusulas que representan la implicación de que si un par de equipos compite en un día y bloque de tiempo específicos, el equipo local no puede jugar como local contra cualquier otro equipo y en cualquier otro bloque de tiempo el día siguiente (lo mismo se aplica para el visitante). Las cláusulas se formulan de la siguiente manera: (¬x(i, j, d, b)∨¬x(i, k, d+1, b′)) y (¬x(i, j, d, b)∨¬x(k, j, d+1, b′)) para cualquier otro equipo k.
 
 ### Implementación
 El proyecto fue implementado en Python. Para ejecutar el programa, primero instala el paquete `ics`, que se utilizará para crear archivos en formato iCalendar. Esto se puede hacer utilizando el siguiente comando en un entorno virtual: 
